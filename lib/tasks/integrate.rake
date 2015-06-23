@@ -51,7 +51,7 @@ task promote_staging_to_production: [
 
 namespace :integration do
   task :set_production_as_deploy_env do
-    ENV['APP_ENV'] || 'production'
+    ENV['APP_ENV'] ||= 'production'
   end
 
   task :environment do

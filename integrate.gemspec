@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Continuous Integration (CI) process used by https://www.nutrebem.com.br and derived projects.}
   # spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "https://github.com:Easyfood/integrate"
+  spec.homepage      = "https://github.com/Easyfood/integrate"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.

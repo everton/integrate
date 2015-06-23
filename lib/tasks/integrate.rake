@@ -34,23 +34,26 @@ task integrate: [
 
 desc 'Promote stage environment to production, ' +
      'checks coverage and tests'
-task 'promote_staging_to_production' do
-  [
-   'integration:git:status_check',
-   'integration:git:pull',
-   'integration:git:master_branch_check',
-   'integration:git:promote_staging_to_production',
-   'integration:git:push',
-   'integration:db:backup',
-   'integration:lock',
-   'integration:deploy',
-   'integration:unlock'
-  ].each do |task|
-    Rake::Task[task].invoke('production')
-  end
-end
+task promote_staging_to_production: [
+  'integration:set_production_as_deploy_env',
+  'integration:environment',
+  'integration:git:status_check',
+  'integration:clear_before_pull',
+  'integration:git:pull',
+  'integration:git:master_branch_check',
+  'integration:git:promote_staging_to_production',
+  'integration:git:push',
+  'integration:db:backup',
+  'integration:lock',
+  'integration:deploy',
+  'integration:unlock'
+]
 
 namespace :integration do
+  task :set_production_as_deploy_env do
+    ENV['APP_ENV'] || 'production'
+  end
+
   task :environment do
     if Kernel.const_defined? :Rails
       PROJECT   = Rails.application.class.parent_name.underscore

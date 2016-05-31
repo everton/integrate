@@ -97,9 +97,11 @@ namespace :integration do
 
   namespace :db do
     task :backup do
-      # https://devcenter.heroku.com/articles/pgbackups
-      puts "-----> Backup #{APP_ENV} database..."
-      sh_with_clean_env "heroku pg:backups capture --app #{APP}"
+      unless ENV['SKIP_DB_BACKUP']
+        # https://devcenter.heroku.com/articles/pgbackups
+        puts "-----> Backup #{APP_ENV} database..."
+        sh_with_clean_env "heroku pg:backups capture --app #{APP}"
+      end
     end
 
   end

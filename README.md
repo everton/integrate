@@ -54,5 +54,7 @@ task :force_different_name_for_heroku_project do
   ENV['PROJECT'] = 'pre-nutrebem'
 end
 
+Rails.application.load_tasks # Se for um projeto Rails
+
 Rake::Task['integration:environment'].enhance [:force_different_name_for_heroku_project]
 ```

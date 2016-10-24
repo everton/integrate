@@ -35,8 +35,24 @@ Cada ambiente está ligado diretamente a um branch. No nosso caso, temos 3(três
 # Como instalar no projeto
 
 1. Cria o projeto
+  1. Cria o projeto local
+  1. git init
+  1. git commit
+  1. Cria o projeto no github(ou qualquer outro) e define ele como origin
+  1. Define o origin como upstream da master:  <code>git push origin master --set-upstream </code>
+  1. Cria dois projetos no Heroku, um para cada ambiente
+  1. um com o sufixo -staging
+  1. um com o sufixo -production
 1. Adiciona a gem em <code>gem 'integrate', git: 'git@github.com:Easyfood/integrate.git'</code>
 1. Criar a branch staging a partir da master: <code>git checkout staging</code>
 1. Define o origin como upstream desse branch: <code>git push origin staging --set-upstream </code>
 1. Criar a branch production a partir da staging: <code>git checkout production</code>
 1. Define o origin como upstream desse branch: <code>git push origin production --set-upstream </code>
+1. Caso precise usar um nome diferente no Heroku, adicione uma task no Rakefile do seu projeto:
+```rake
+task :force_different_name_for_heroku_project do
+  ENV['PROJECT'] = 'pre-nutrebem'
+end
+
+Rake::Task['integration:environment'].enhance [:force_different_name_for_heroku_project]
+```

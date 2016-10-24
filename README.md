@@ -31,3 +31,12 @@ Cada ambiente está ligado diretamente a um branch. No nosso caso, temos 3(três
 13. Roda o seed: heroku run rake db:seed --app #{APP}
 14. Reinicia o ambiente de staging: heroku restart --app #{APP}
 15. Remove a variável do heroku que informar que você estava fazendo deploy
+
+# Como instalar no projeto
+
+1. Cria o projeto
+1. Adiciona a gem em <code>gem 'integrate', git: 'git@github.com:Easyfood/integrate.git'</code>
+1. Criar a branch staging a partir da master: <code>git checkout staging</code>
+1. Define o origin como upstream desse branch: <code>git push origin staging --set-upstream </code>
+1. Criar a branch production a partir da staging: <code>git checkout production</code>
+1. Define o origin como upstream desse branch: <code>git push origin production --set-upstream </code>

@@ -2,7 +2,8 @@ if Kernel.const_defined? :Rails
   task 'integration:clear_before_pull' => [ 'log:clear', 'tmp:clear' ]
 
   task 'integration:test:prepare' => [
-    'db:drop', 'db:create', 'db:migrate', 'db:seed', 'db:test:prepare'
+    'db:drop', 'db:create', 'db:schema:load',
+    'db:migrate', 'db:seed', 'db:test:prepare'
   ]
 else
   task 'integration:clear_before_pull'

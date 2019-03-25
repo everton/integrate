@@ -12,7 +12,9 @@ end
 
 def sh_with_clean_env(cmd)
   Bundler.with_clean_env do
-    sh "#{cmd}"
+    puts cmd
+
+    return `#{cmd}`
   end
 end
 
@@ -21,6 +23,7 @@ desc 'Run all integration process: pull, migration, ' +
 task integrate: [
   'integration:environment',
   'integration:git:status_check',
+  'integration:grant_no_one_else_is_integrating',
   'integration:clear_before_pull',
   'integration:git:pull',
   'integration:bundle_install',
@@ -39,6 +42,7 @@ task promote_staging_to_production: [
   'integration:set_production_as_deploy_env',
   'integration:environment',
   'integration:git:status_check',
+  'integration:grant_no_one_else_is_integrating',
   'integration:clear_before_pull',
   'integration:git:pull',
   'integration:git:master_branch_check',
@@ -80,6 +84,15 @@ namespace :integration do
 
   task :unlock do
     sh_with_clean_env "heroku config:remove INTEGRATING_BY --app #{APP}"
+  end
+
+  task :grant_no_one_else_is_integrating do
+    x = sh_with_clean_env("heroku config:get INTEGRATING_BY --app #{APP}").chomp
+
+    if x.present? && x != USER
+      puts "\"#{x}\" is already integrating app #{APP}"
+      exit
+    end
   end
 
   task 'deploy' do

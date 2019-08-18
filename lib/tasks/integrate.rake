@@ -61,7 +61,7 @@ namespace :integration do
 
   task :environment do
     if Kernel.const_defined? :Rails
-      PROJECT   = ENV['PROJECT'  ] || Rails.application.class.parent_name.underscore
+      PROJECT   = ENV['PROJECT'  ] || Rails.application.class.module_parent_name.underscore
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
     else
       PROJECT   = ENV['PROJECT'  ] || `git remote show origin -n | grep "Fetch URL:" | sed "s#^.*/\\(.*\\)\\(\\.git\\)*#\\1#"`.chomp

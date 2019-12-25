@@ -11,7 +11,7 @@ else
 end
 
 def sh_with_clean_env(cmd)
-  Bundler.with_clean_env do
+  Bundler.with_unbundled_env do
     puts cmd
 
     return `#{cmd}`

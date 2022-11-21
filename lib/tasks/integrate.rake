@@ -64,7 +64,8 @@ namespace :integration do
       PROJECT   = ENV['PROJECT'  ] || Rails.application.class.module_parent_name.underscore
       RAILS_ENV = ENV['RAILS_ENV'] || 'development'
     else
-      PROJECT   = ENV['PROJECT'  ] || `git remote show origin -n | grep "Fetch URL:" | sed "s#^.*/\\(.*\\)\\(\\.git\\)*#\\1#"`.chomp
+      PROJECT   = ENV['PROJECT'  ] || `git remote show origin -n | grep "Fetch URL:"`
+                                        .chomp.gsub(/^.+\/(.+)(.git)$/, '\1')
       RACK_ENV  = ENV['RACK_ENV' ] || 'development'
     end
 

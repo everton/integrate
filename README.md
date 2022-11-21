@@ -43,7 +43,7 @@ Cada ambiente está ligado diretamente a um branch. No nosso caso, temos 3(três
   1. Cria dois projetos no Heroku, um para cada ambiente
   1. um com o sufixo -staging
   1. um com o sufixo -production
-1. Adiciona a gem em <code>gem 'integrate', git: 'git@github.com:Easyfood/integrate.git'</code>
+1. Adiciona a gem em <code>gem 'integrate', git: 'git@github.com:everton/integrate.git'</code>
 1. Criar a branch staging a partir da master: <code>git checkout staging</code>
 1. Define o origin como upstream desse branch: <code>git push origin staging --set-upstream </code>
 1. Criar a branch production a partir da staging: <code>git checkout production</code>

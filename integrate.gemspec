@@ -11,12 +11,12 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Continuous Integration (CI) process used by https://www.nutrebem.com.br and derived projects.}
   # spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "https://github.com/Easyfood/integrate"
+  spec.homepage      = "https://github.com/everton/integrate"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "git@github.com:Easyfood/integrate.git"
+    spec.metadata['allowed_push_host'] = "git@github.com:everton/integrate.git"
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end

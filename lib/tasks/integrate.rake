@@ -28,8 +28,8 @@ task integrate: [
   'integration:git:pull',
   'integration:bundle_install',
   'integration:test',
-  'integration:git:master_branch_check',
-  'integration:git:promote_master_to_staging',
+  'integration:git:main_branch_check',
+  'integration:git:promote_main_to_staging',
   'integration:git:push',
   'integration:lock',
   'integration:deploy',
@@ -45,7 +45,7 @@ task promote_staging_to_production: [
   'integration:grant_no_one_else_is_integrating',
   'integration:clear_before_pull',
   'integration:git:pull',
-  'integration:git:master_branch_check',
+  'integration:git:main_branch_check',
   'integration:git:promote_staging_to_production',
   'integration:git:push',
   'integration:db:backup',
@@ -61,17 +61,18 @@ namespace :integration do
 
   task :environment do
     if Kernel.const_defined? :Rails
-      PROJECT   = ENV['PROJECT'  ] || Rails.application.class.module_parent_name.underscore
-      RAILS_ENV = ENV['RAILS_ENV'] || 'development'
+      PROJECT   = ENV['PROJECT'    ] || Rails.application.class.module_parent_name.underscore
+      RAILS_ENV = ENV['RAILS_ENV'  ] || 'development'
     else
-      PROJECT   = ENV['PROJECT'  ] || `git remote show origin -n | grep "Fetch URL:"`
-                                        .chomp.gsub(/^.+\/(.+)(.git)$/, '\1')
-      RACK_ENV  = ENV['RACK_ENV' ] || 'development'
+      PROJECT   = ENV['PROJECT'    ] || `git remote show origin -n | grep "Fetch URL:"`
+                                          .chomp.gsub(/^.+\/(.+)(.git)$/, '\1')
+      RACK_ENV  = ENV['RACK_ENV'   ] || 'development'
     end
 
-    USER    = `whoami`.chomp
-    APP_ENV = ENV['APP_ENV'] || 'staging'
-    APP     = "#{PROJECT}-#{APP_ENV}"
+    MAIN_BRANCH = ENV['MAIN_BRANCH'] || 'main'
+    USER        = `whoami`.chomp
+    APP_ENV     = ENV['APP_ENV'    ] || 'staging'
+    APP         = "#{PROJECT}-#{APP_ENV}"
   end
 
   task test: 'integration:test:prepare' do
@@ -99,7 +100,7 @@ namespace :integration do
 
   task 'deploy' do
     puts "-----> Pushing #{APP_ENV} to #{APP}..."
-    sh_with_clean_env "git push https://git.heroku.com/#{APP}.git #{APP_ENV}:master"
+    sh_with_clean_env "git push https://git.heroku.com/#{APP}.git #{APP_ENV}:#{MAIN_BRANCH}"
 
     puts "-----> Migrating..."
     sh_with_clean_env "heroku run rake db:migrate --app #{APP}"
@@ -137,7 +138,7 @@ namespace :integration do
       end
     end
 
-    task 'master_branch_check' do
+    task 'main_branch_check' do
       cmd = []
       cmd << "git branch --color=never" # list branches avoiding color
                                         #   control characters
@@ -147,10 +148,10 @@ namespace :integration do
       branch = `#{cmd.join('|')}`.chomp
 
       # Don't use == because git uses bash color escape sequences
-      unless branch == 'master'
+      unless branch == MAIN_BRANCH
         puts "You are at branch <#{branch}>"
-        puts "Integration deploy runs only from <master> branch," +
-          " please merge <#{branch}> into <master> and" +
+        puts "Integration deploy runs only from <#{MAIN_BRANCH}> branch," +
+          " please merge <#{branch}> into <#{MAIN_BRANCH}> and" +
           " run integration proccess from there."
 
         exit
@@ -165,12 +166,12 @@ namespace :integration do
       sh 'git push'
     end
 
-    task :promote_master_to_staging do
+    task :promote_main_to_staging do
       sh "git checkout staging"
       sh 'git pull --rebase'
-      sh "git rebase master"
+      sh "git rebase #{MAIN_BRANCH}"
       sh 'git push origin staging'
-      sh "git checkout master"
+      sh "git checkout #{MAIN_BRANCH}"
     end
 
     task :promote_staging_to_production do
@@ -178,7 +179,7 @@ namespace :integration do
       sh 'git pull --rebase'
       sh "git rebase staging"
       sh 'git push origin production'
-      sh "git checkout master"
+      sh "git checkout #{MAIN_BRANCH}"
     end
   end
 end

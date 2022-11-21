@@ -90,9 +90,21 @@ namespace :integration do
   end
 
   task :grant_no_one_else_is_integrating do
-    x = sh_with_clean_env("heroku config:get INTEGRATING_BY --app #{APP}").chomp
+    x = sh_with_clean_env("heroku config:get INTEGRATING_BY --app #{APP}")
+          .strip
 
-    if x.present? && x != USER
+    unless $?.success?  # $? is the Process::Status of last command
+      puts <<~ERR
+       Something went wrong communicating with Heroku!
+       Please make sure you have access to the app #{APP}
+
+       Last command output: #{x.inspect}
+      ERR
+
+      exit
+    end
+
+    if !x.empty? && x != USER
       puts "\"#{x}\" is already integrating app #{APP}"
       exit
     end

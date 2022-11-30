@@ -114,11 +114,13 @@ namespace :integration do
     puts "-----> Pushing #{APP_ENV} to #{APP}..."
     sh_with_clean_env "git push https://git.heroku.com/#{APP}.git #{APP_ENV}:#{MAIN_BRANCH}"
 
-    puts "-----> Migrating..."
-    sh_with_clean_env "heroku run rake db:migrate --app #{APP}"
+    if Kernel.const_defined? :Rails
+      puts "-----> Migrating..."
+      sh_with_clean_env "heroku run rake db:migrate --app #{APP}"
 
-    puts "-----> Seeding..."
-    sh_with_clean_env "heroku run rake db:seed --app #{APP}"
+      puts "-----> Seeding..."
+      sh_with_clean_env "heroku run rake db:seed --app #{APP}"
+    end
 
     puts "-----> Restarting..."
     sh_with_clean_env "heroku restart --app #{APP}"

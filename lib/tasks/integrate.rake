@@ -77,11 +77,9 @@ namespace :integration do
 
   task test: 'integration:test:prepare' do
     if Kernel.const_defined?(:Rails)
-      cmd =  'rails test:all -f'
-    elsif Rake::Task.task_defined? 'test:all'
-      cmd = 'rake test:all'
+      cmd = 'rails test:all -f'
     else
-      cmd = 'rake test'
+      cmd = 'rake test:all'
     end
 
     system("#{cmd} RAILS_ENV=test RACK_ENV=test")
